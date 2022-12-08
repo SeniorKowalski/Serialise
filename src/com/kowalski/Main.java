@@ -4,20 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static com.kowalski.Basket.loadFromTxtFile;
+import static com.kowalski.Basket.loadFromBinFile;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        String[] products = {"ÐœÐ¾Ð»Ð¾ÐºÐ¾", "Ð¥Ð»ÐµÐ±", "Ð“Ñ€ÐµÑ‡ÐºÐ°", "ÐœÐ°ÑÐ»Ð¾", "Ð¢Ð²Ð¾Ñ€Ð¾Ð³", "ÐœÐ°ÐºÐ°Ñ€Ð¾Ð½Ñ‹", "Ð¨Ð¾ÐºÐ¾Ð»Ð°Ð´"};
+        String[] products = {"Ìîëîêî", "Õëåá", "Ãðå÷êà", "Ìàñëî", "Òâîðîã", "Ìàêàðîíû", "Øîêîëàä"};
         int[] prices = {50, 25, 80, 60, 55, 42, 30};
         Scanner scanner = new Scanner(System.in);
         Basket basket = new Basket(products, prices);
-        File file = new File("basket.txt");
+        File file = new File("basket.bin");
         try {
             if (file.exists()) {
-                loadFromTxtFile(file);
+                basket = loadFromBinFile(file);
                 System.out.println("File " + file.getName() + " loaded!");
             } else {
                 file.createNewFile();
@@ -31,9 +31,9 @@ public class Main {
 
         while (true) {
             System.out.println("--------------------------------------------------------------");
-            System.out.println("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ Ñ‚Ð¾Ð²Ð°Ñ€Ð° Ð¸ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ \n" +
-                    "\"price\" -  ÑƒÐ·Ð½Ð°Ñ‚ÑŒ Ñ†ÐµÐ½Ñ‹ \n" +
-                    "\"end\" - Ð²Ñ‹Ñ…Ð¾Ð´");
+            System.out.println("Ââåäèòå íîìåð òîâàðà è êîëè÷åñòâî \n" +
+                    "\"price\" -  óçíàòü öåíû \n" +
+                    "\"end\" - âûõîä");
             String input = scanner.nextLine();
             if (input.equals("end")) {
                 scanner.close();
@@ -49,26 +49,26 @@ public class Main {
                         if (inputProd > 0 && inputProd < (products.length + 1)) {
                             int prodQuantity = Integer.parseInt(parts[1]);
                             basket.addToCart(inputProd, prodQuantity);
-                            basket.saveTxt(file);
+                            basket.saveBin(file);
                         } else {
-                            System.out.println("ÐÐµ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ð¾Ðµ Ñ‡Ð¸ÑÐ»Ð¾!");
+                            System.out.println("Íå êîððåêòíîå ÷èñëî!");
                         }
                     } else {
-                        System.out.println("ÐÐµ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ð¾Ðµ Ñ‡Ð¸ÑÐ»Ð¾!!");
+                        System.out.println("Íå êîððåêòíîå ÷èñëî!!");
                     }
-                } catch (NumberFormatException | IOException e) {
-                    System.out.println("ÐÐµ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ð¾Ðµ Ñ‡Ð¸ÑÐ»Ð¾!!!");
+                } catch (NumberFormatException e) {
+                    System.out.println("Íå êîððåêòíîå ÷èñëî!!!");
                 }
             }
         }
     }
 
     public static void whatPrice(String[] products, int[] prices) {
-        System.out.println("Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¾Ð²: ");
+        System.out.println("Ñïèñîê ïðîäóêòîâ: ");
         for (int i = 0; i < products.length; i++) {
             System.out.println(new StringBuilder().append(i + 1).append(" - ")
                     .append(products[i]).append(" ")
-                    .append(prices[i]).append(" Ñ€ÑƒÐ±Ð»ÐµÐ¹ Ð·Ð° ÑˆÑ‚ÑƒÐºÑƒ.").toString());
+                    .append(prices[i]).append(" ðóáëåé çà øòóêó.").toString());
         }
     }
 }
