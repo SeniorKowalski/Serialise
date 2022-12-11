@@ -4,11 +4,11 @@ import java.io.*;
 
 public class Basket implements Serializable {
 
-    String[] products;
-    int[] prices;
-    int[] productSum;
-    int[] quantity;
-    String[] result;
+    private String[] products;
+    private int[] prices;
+    private int[] productSum;
+    private int[] quantity;
+    private String[] result;
 
     public Basket(String[] products, int[] prices) {
         this.products = products;
