@@ -4,20 +4,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static com.kowalski.Basket.loadFromTxtFile;
-
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         String[] products = {"Молоко", "Хлеб", "Гречка", "Масло", "Творог", "Макароны", "Шоколад"};
         int[] prices = {50, 25, 80, 60, 55, 42, 30};
         Scanner scanner = new Scanner(System.in);
         Basket basket = new Basket(products, prices);
-        File file = new File("basket.txt");
+        ClientLog logger = new ClientLog();
+        File file = new File("basket.json");
+        File log = new File("log.csv");
+
         try {
             if (file.exists()) {
-                loadFromTxtFile(file);
+                //loadFromTxtFile(file);
+                basket = Basket.loadAsJSON(file);
                 System.out.println("File " + file.getName() + " loaded!");
             } else {
                 file.createNewFile();
@@ -25,6 +27,10 @@ public class Main {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (!log.exists()){
+            file.createNewFile();
+            System.out.println("Log file created!");
         }
 
         whatPrice(products, prices);
@@ -38,6 +44,7 @@ public class Main {
             if (input.equals("end")) {
                 scanner.close();
                 basket.printCart();
+                logger.exportAsCSV(log);
                 break;
             } else if (input.equals("price")) {
                 whatPrice(products, prices);
@@ -49,14 +56,16 @@ public class Main {
                         if (inputProd > 0 && inputProd < (products.length + 1)) {
                             int prodQuantity = Integer.parseInt(parts[1]);
                             basket.addToCart(inputProd, prodQuantity);
-                            basket.saveTxt(file);
+                            //basket.saveTxt(file);
+                            basket.saveAsJSON(file);
+                            logger.log(inputProd,prodQuantity);
                         } else {
                             System.out.println("Не корректное число!");
                         }
                     } else {
                         System.out.println("Не корректное число!!");
                     }
-                } catch (NumberFormatException | IOException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Не корректное число!!!");
                 }
             }

@@ -1,25 +1,27 @@
 package com.kowalski;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.*;
 public class Basket {
 
     private static String[] products;
     private static int[] prices;
-    static int[] productSum;
-    static int[] quantity;
-    static String[] result;
+    int[] productSum;
+    int[] quantity;
+    String[] result;
 
     public Basket(String[] products, int[] prices) {
         Basket.products = products;
         Basket.prices = prices;
-        productSum = new int[products.length];
-        result = new String[products.length];
-        quantity = new int[products.length];
+        this.productSum = new int[products.length];
+        this.result = new String[products.length];
+        this.quantity = new int[products.length];
     }
 
     public void addToCart(int productNum, int amount) {
         quantity[productNum - 1] += amount;
         productSum[productNum - 1] = prices[productNum - 1] * quantity[productNum - 1];
-        result[productNum - 1] = products[productNum - 1] + " " + quantity[productNum - 1] + " " + productSum[productNum - 1];
+        result[productNum - 1] = products[productNum - 1] + ", " + quantity[productNum - 1] + ", " + productSum[productNum - 1];
         System.out.println("Вы добавили в корзину: " + products[productNum - 1] + " " + quantity[productNum - 1] + " шт. на " + productSum[productNum - 1] + " руб.");
     }
 
@@ -62,6 +64,29 @@ public class Basket {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+        return basket;
+    }
+
+    public void saveAsJSON(File file) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+            bufferedWriter.write(gson.toJson(this));
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Basket loadAsJSON(File file) {
+        Basket basket;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            basket = gson.fromJson(bufferedReader, Basket.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return basket;
     }
