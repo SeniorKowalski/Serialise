@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static com.kowalski.Basket.loadFromTxtFile;
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -11,16 +13,24 @@ public class Main {
         String[] products = {"Молоко", "Хлеб", "Гречка", "Масло", "Творог", "Макароны", "Шоколад"};
         int[] prices = {50, 25, 80, 60, 55, 42, 30};
         Scanner scanner = new Scanner(System.in);
+        Settings loadSettings = new Settings("load");
+        Settings saveSettings = new Settings("save");
+        Settings logSettings = new Settings("log");
         Basket basket = new Basket(products, prices);
         ClientLog logger = new ClientLog();
-        File file = new File("basket.json");
-        File log = new File("log.csv");
+        File file = new File(loadSettings.getFileName() + loadSettings.getFormat());
+        File log = new File(logSettings.getFileName());
 
         try {
             if (file.exists()) {
-                //loadFromTxtFile(file);
-                basket = Basket.loadAsJSON(file);
-                System.out.println("File " + file.getName() + " loaded!");
+                if (loadSettings.getEnabled()) {
+                    if (loadSettings.getFormat().equals(".txt")) {
+                        loadFromTxtFile(file);
+                    } else {
+                        basket = Basket.loadAsJSON(file);
+                    }
+                    System.out.println("File " + file.getName() + " loaded!");
+                }
             } else {
                 file.createNewFile();
                 System.out.println("File " + file.getName() + " created!");
@@ -28,8 +38,8 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (!log.exists()){
-            file.createNewFile();
+        if (!log.exists()) {
+            log.createNewFile();
             System.out.println("Log file created!");
         }
 
@@ -44,7 +54,9 @@ public class Main {
             if (input.equals("end")) {
                 scanner.close();
                 basket.printCart();
-                logger.exportAsCSV(log);
+                if (logSettings.getEnabled()) {
+                    logger.exportAsCSV(log);
+                }
                 break;
             } else if (input.equals("price")) {
                 whatPrice(products, prices);
@@ -56,9 +68,14 @@ public class Main {
                         if (inputProd > 0 && inputProd < (products.length + 1)) {
                             int prodQuantity = Integer.parseInt(parts[1]);
                             basket.addToCart(inputProd, prodQuantity);
-                            //basket.saveTxt(file);
-                            basket.saveAsJSON(file);
-                            logger.log(inputProd,prodQuantity);
+                            if (saveSettings.getEnabled()) {
+                                if (saveSettings.getFormat().equals(".txt")) {
+                                    basket.saveTxt(file);
+                                } else if (saveSettings.getFormat().equals(".json")) {
+                                    basket.saveAsJSON(file);
+                                }
+                            }
+                            logger.log(inputProd, prodQuantity);
                         } else {
                             System.out.println("Не корректное число!");
                         }

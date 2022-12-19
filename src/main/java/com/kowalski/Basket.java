@@ -1,7 +1,10 @@
 package com.kowalski;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.io.*;
+
 public class Basket {
 
     private static String[] products;
