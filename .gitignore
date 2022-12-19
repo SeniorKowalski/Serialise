@@ -25,3 +25,6 @@ hs_err_pid*
 *.iml
 out
 .idea
+basket.json
+basket.txt
+client.csv
