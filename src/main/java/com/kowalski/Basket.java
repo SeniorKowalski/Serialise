@@ -9,9 +9,9 @@ public class Basket {
 
     private static String[] products;
     private static int[] prices;
-    int[] productSum;
-    int[] quantity;
-    String[] result;
+    private int[] productSum;
+    private int[] quantity;
+    private String[] result;
 
     public Basket(String[] products, int[] prices) {
         Basket.products = products;
@@ -42,7 +42,7 @@ public class Basket {
         System.out.println("Итого: " + sum);
     }
 
-    public void saveTxt(File textFile) throws IOException {
+    public void saveTxt(File textFile) {
         try (PrintWriter out = new PrintWriter(textFile)) {
             for (String e : result) {
                 if (e != null)
@@ -53,7 +53,7 @@ public class Basket {
         }
     }
 
-    static Basket loadFromTxtFile(File textFile) {
+    public static Basket loadFromTxtFile(File textFile) {
         Basket basket = new Basket(products, prices);
         try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
             String res;
@@ -82,7 +82,7 @@ public class Basket {
         }
     }
 
-    static Basket loadAsJSON(File file) {
+    public static Basket loadAsJSON(File file) {
         Basket basket;
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();

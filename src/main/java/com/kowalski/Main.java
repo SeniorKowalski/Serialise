@@ -65,16 +65,10 @@ public class Main {
                 try {
                     if (parts.length == 2) {
                         int inputProd = Integer.parseInt(input.substring(0, input.indexOf(" ")));
+                        int prodQuantity = Integer.parseInt(parts[1]);
                         if (inputProd > 0 && inputProd < (products.length + 1)) {
-                            int prodQuantity = Integer.parseInt(parts[1]);
                             basket.addToCart(inputProd, prodQuantity);
-                            if (saveSettings.getEnabled()) {
-                                if (saveSettings.getFormat().equals(".txt")) {
-                                    basket.saveTxt(file);
-                                } else if (saveSettings.getFormat().equals(".json")) {
-                                    basket.saveAsJSON(file);
-                                }
-                            }
+                            isSaveSettingsEnabled(saveSettings, basket, file);
                             logger.log(inputProd, prodQuantity);
                         } else {
                             System.out.println("Не корректное число!");
@@ -85,6 +79,16 @@ public class Main {
                 } catch (NumberFormatException e) {
                     System.out.println("Не корректное число!!!");
                 }
+            }
+        }
+    }
+
+    private static void isSaveSettingsEnabled(Settings saveSettings, Basket basket, File file) {
+        if (saveSettings.getEnabled()) {
+            if (saveSettings.getFormat().equals(".txt")) {
+                basket.saveTxt(file);
+            } else if (saveSettings.getFormat().equals(".json")) {
+                basket.saveAsJSON(file);
             }
         }
     }
